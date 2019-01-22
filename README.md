@@ -6,6 +6,7 @@
 - [HTML5 WebSocket](http://www.runoob.com/html/html5-websocket.html)
 - [Create a WebSocket Server Using Node.js](https://www.dotnetcurry.com/nodejs/1220/create-web-socket-server-nodejs-for-real-time)
 - [WebSocket : Simple client and Server](https://blog.revathskumar.com/2015/08/websockets-simple-client-and-server.html)
+- [ws: a Node.js WebSocket library](https://github.com/websockets/ws)
 
 ## windows 环境
 

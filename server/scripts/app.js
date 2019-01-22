@@ -1,10 +1,10 @@
 // 1. Load modules to create WebSocket Server, WebServer, File IO
-var webSocketServer = require('ws').Server;
-var http = require('http');
-var fs = require('fs');
+const webSocketServer = require('ws').Server;
+const http = require('http');
+const fs = require('fs');
 
 // 2. Create a WebSocket instance, and register the port 9060
-var ws = new webSocketServer({ port: 9060 });
+const ws = new webSocketServer({ port: 9060 });
 
 //3. Register 'connection' event to manage messages through it
 ws.on('connection', function(socket, req) {
@@ -14,8 +14,9 @@ ws.on('connection', function(socket, req) {
 
   socket.on('message', function(message){
     var id = req.headers['sec-websocket-key'];
+    var ip = req.connection.remoteAddress;
     console.log('The ', message, ' Message Received \n from IP '
-    + req.connection.remoteAddress, ' \n from id ', id);
+    + ip, ' \n from id ', id);
     socket.send('Received ' + message);
   });
 

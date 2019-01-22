@@ -7,17 +7,17 @@
   <h1>The Communication with Socket</h1>
   Message:<input type='text' id="message">
   <br />
-  <input type="button" id="btnsend" value="Send" />
+  <input type="button" id="btnSend" value="Send" />
   <div id="dvMessage"> </div>
 
   <script type="text/javascript">
     $(document).ready(function(){
       // 1. Create a WebSocket instance, connect to server URL
-      var ws = new WebSocket("ws://localhost:9060");
+      const ws = new WebSocket("ws://localhost:9060");
       var communication = "";
 
       // 2. Register 'click' event, sending message from the textbox to server
-      $("#btnsend").on('click',function(){
+      $("#btnSend").on('click',function(){
         var message = $("#message").val();
         ws.send(message);
         communication += 'Send Message: ' + message + '<br/>';
