@@ -7,6 +7,9 @@
 - [Create a WebSocket Server Using Node.js](https://www.dotnetcurry.com/nodejs/1220/create-web-socket-server-nodejs-for-real-time)
 - [WebSocket : Simple client and Server](https://blog.revathskumar.com/2015/08/websockets-simple-client-and-server.html)
 - [ws: a Node.js WebSocket library](https://github.com/websockets/ws)
+- [WebSocket + Node.js + Express — Step by step tutorial using Typescript](https://medium.com/factory-mind/websocket-node-js-express-step-by-step-using-typescript-725114ad5fe4)
+- [[Node.js] set up Websocket + Express + HTML service in 3 step](https://hackernoon.com/nodejs-web-socket-example-tutorial-send-message-connect-express-set-up-easy-step-30347a2c5535)
+- [Create a WebSocket Client in JavaScript](https://www.pegaxchange.com/2018/03/23/websocket-client/)
 
 ## windows 环境
 
