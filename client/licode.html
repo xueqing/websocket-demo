@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Licode Basic Example</title>
+    <link rel="stylesheet" href="css/licode.css" />
+    <script type="text/javascript" src="./js/erizo.js"></script>
+    <script type="text/javascript" src="./js/licode.js"></script>
+  </head>
+
+  <body>
+    <div id="myVideo">
+    </div>
+
+    <div>
+      <table>
+        <tr>
+          <td>WS protocol</td>
+          <td>
+            <select id="protocol">
+              <option value="ws" selected="selected">ws</option>
+              <option value="wss">wss</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>WS Host</td>
+          <td><input type="text" id="host" value="192.168.1.140" /></td>
+        </tr>
+        <tr>
+          <td>WS Port</td>
+          <td><input type="text" id="port" value="8888" /></td>
+        </tr>
+        <tr>
+          <td>WS Endpoint</td>
+          <td><input type="text" id="endpoint" value="" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <input id="btnConnect" type="button" value="connect" onclick="connectWS()" />&nbsp;&nbsp;
+            <input id="btnDisconnect" type="button" value="disconnect" onclick="disconnectWS()" disabled="disabled" />
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>Room Name</td>
+          <td><input id="roomname" type="text" value="kikiroom" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <input id="btnCreateRoom" type="button" value="createRoom" onclick="createRoom()" disabled="disabled" />
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>User Name</td>
+          <td><input id="username" type="text" value="kiki" /></td>
+        </tr>
+        <tr>
+          <td>User Role</td>
+          <td><input id="userrole" type="text" value="initiator" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <input id="btnCreateToken" type="button" value="createToken" onclick="createToken()" disabled="disabled" />
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

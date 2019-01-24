@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+}
+
+video {
+  width: 320px;
+  height: 240px;
+}
+
+table {
+  border: 2px solid black;
+}
+
+td {
+  width: 200px;
+}
+
+input {
+  width: 300px;
+}
+
+select {
+  width: 300px;
+}
+
+button {
+  width: 100px;
+}
