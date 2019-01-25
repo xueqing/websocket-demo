@@ -6,10 +6,6 @@ let myRoomId;
 let myToken;
 let slideShowMode = false;
 
-function printText(text) {
-  document.getElementById('messages').value += `- ${text}\n`;
-};
-
 function connectWS() {
   var wsprotocol = document.getElementById('protocol').value;
   var wshost = document.getElementById('host').value;
@@ -139,14 +135,14 @@ const startChat = () => {
   };
 
   myRoom.addEventListener('room-connected', (roomEvent) => {
-    printText('Connected to the room OK');
+    console.log('Connected to the room OK');
     const options = { maxVideoBW: 300, metadata: { type: 'publisher' } };
     myRoom.publish(localStream, options);
     subscribeToStreams(roomEvent.streams);
   });
 
   myRoom.addEventListener('stream-subscribed', (streamEvent) => {
-    printText('Subscribed remote stream OK');
+    console.log('Subscribed remote stream OK');
     const stream = streamEvent.stream;
     const div = document.createElement('div');
     div.setAttribute('id', `${stream.getID()}`);
@@ -158,7 +154,7 @@ const startChat = () => {
   });
 
   myRoom.addEventListener('stream-added', (streamEvent) => {
-    printText('Local stream published OK');
+    console.log('Local stream published OK');
     const streams = [];
     streams.push(streamEvent.stream);
     subscribeToStreams(streams);
@@ -175,7 +171,7 @@ const startChat = () => {
 
   myRoom.addEventListener('stream-failed', () => {
     console.log('Stream Failed, disconnect');
-    printText('Stream Failed, disconnect');
+    console.log('Stream Failed, disconnect');
     myRoom.disconnect();
   });
 
@@ -186,10 +182,10 @@ const startChat = () => {
   document.getElementById('videoContainer').appendChild(div);
 
   localStream.addEventListener('access-accepted', () => {
-    printText('Get local Mic and Cam');
+    console.log('Get local Mic and Cam');
 
     myRoom.connect();
-    localStream.play('localVideo');
+    localStream.show('localVideo');
   }, (error) => {
     console.log('Error happened: ', error);
   });
