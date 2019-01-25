@@ -1,66 +1,14 @@
 let serverUrl = '/';
 let ws;
 let localStream;
-let room;
-let roomid;
-let token;
+let myRoom;
+let myRoomId;
+let myToken;
+let slideShowMode = false;
 
 function printText(text) {
   document.getElementById('messages').value += `- ${text}\n`;
 };
-
-// window.onload = () => {
-  // const config = { audio: true, video: true, data: true };
-  // var localStream = Erizo.Stream(config);
-  // var room = Erizo.Room({token: 'eyJ0b2tlbklkIjoiNWM0OTFlY2UxMDllZTFmYTUxNTgzNjZjIiwiaG9zdCI6IjE5Mi4xNjguMS4xNDA6ODA4MCIsInNlY3VyZSI6ZmFsc2UsInNpZ25hdHVyZSI6Ik9EWmxOakZoTW1KaVpHWmpOR0kxWWpZM1ptSmpPV0UwWWprd05EZzJZakE1TnpJeFl6Y3daZz09In0='});
-
-  // localStream.addEventListener('access-accepted', function () {
-
-  //     var subscribeToStreams = function (streams) {
-  //         for (var index in streams) {
-  //           var stream = streams[index];
-  //           if (localStream.getID() !== stream.getID()) {
-  //               room.subscribe(stream);
-  //           }
-  //         }
-  //     };
-
-  //     room.addEventListener('room-connected', function (roomEvent) {
-
-  //         room.publish(localStream);
-  //         subscribeToStreams(roomEvent.streams);
-  //     });
-
-  //     room.addEventListener('stream-subscribed', function(streamEvent) {
-  //         var stream = streamEvent.stream;
-  //         var div = document.createElement('div');
-  //         div.setAttribute('style', 'width: 320px; height: 240px;');
-  //         div.setAttribute('id', 'test' + stream.getID());
-
-  //         document.body.appendChild(div);
-  //         stream.play('test' + stream.getID());
-  //     });
-
-  //     room.addEventListener('stream-added', function (streamEvent) {
-  //         var streams = [];
-  //         streams.push(streamEvent.stream);
-  //         subscribeToStreams(streams);
-  //     });
-
-  //     room.addEventListener('stream-removed', function (streamEvent) {
-  //         // Remove stream from DOM
-  //         var stream = streamEvent.stream;
-  //         if (stream.elementID !== undefined) {
-  //             var element = document.getElementById(stream.elementID);
-  //             document.body.removeChild(element);
-  //         }
-  //     });
-
-  //     // room.connect();
-  //     localStream.play('myVideo');
-  // });
-  // localStream.init();
-// };
 
 function connectWS() {
   var wsprotocol = document.getElementById('protocol').value;
@@ -165,11 +113,87 @@ const createToken = () => {
   console.log('createToken::username: ', username, '; userrole: ', userrole);
   var req = {
     'msgtype': 'createtoken',
-    'roomid': roomid,
+    'roomid': myRoomId,
     'username': username,
     'userrole': userrole
   };
   ws.send(JSON.stringify(req));
+}
+
+const startChat = () => {
+  const config = { video: true };
+  localStream = Erizo.Stream(config);
+  myRoom = Erizo.Room({ token: myToken });
+
+  const subscribeToStreams = (streams) => {
+    const cb = (evt) => {
+      console.log('Bandwidth Alert', evt.msg, evt.bandwidth);
+    };
+
+    streams.forEach((stream) => {
+      if (localStream.getID() !== stream.getID()) {
+        myRoom.subscribe(stream, { slideShowMode, metadata: { type: 'subscriber' } });
+        stream.addEventListener('bandwidth-alert', cb);
+      }
+    });
+  };
+
+  myRoom.addEventListener('room-connected', (roomEvent) => {
+    printText('Connected to the room OK');
+    const options = { maxVideoBW: 300, metadata: { type: 'publisher' } };
+    myRoom.publish(localStream, options);
+    subscribeToStreams(roomEvent.streams);
+  });
+
+  myRoom.addEventListener('stream-subscribed', (streamEvent) => {
+    printText('Subscribed remote stream OK');
+    const stream = streamEvent.stream;
+    const div = document.createElement('div');
+    div.setAttribute('id', `${stream.getID()}`);
+    div.setAttribute('type', 'video');
+    div.setAttribute('style', 'float:left;');
+
+    document.getElementById('videoContainer').appendChild(div);
+    stream.show(`${stream.getID()}`);
+  });
+
+  myRoom.addEventListener('stream-added', (streamEvent) => {
+    printText('Local stream published OK');
+    const streams = [];
+    streams.push(streamEvent.stream);
+    subscribeToStreams(streams);
+  });
+
+  myRoom.addEventListener('stream-removed', (streamEvent) => {
+    // Remove stream from DOM
+    const stream = streamEvent.stream;
+    if (stream.elementID !== undefined) {
+      const element = document.getElementById(stream.elementID);
+      document.getElementById('videoContainer').removeChild(element);
+    }
+  });
+
+  myRoom.addEventListener('stream-failed', () => {
+    console.log('Stream Failed, disconnect');
+    printText('Stream Failed, disconnect');
+    myRoom.disconnect();
+  });
+
+  const div = document.createElement('div');
+  div.setAttribute('id', 'localVideo');
+  div.setAttribute('type', 'video');
+  div.setAttribute('style', 'float:left');
+  document.getElementById('videoContainer').appendChild(div);
+
+  localStream.addEventListener('access-accepted', () => {
+    printText('Get local Mic and Cam');
+
+    myRoom.connect();
+    localStream.play('localVideo');
+  }, (error) => {
+    console.log('Error happened: ', error);
+  });
+  localStream.init();
 }
 // ---------------request to ws server---------------
 
@@ -182,14 +206,15 @@ const onGetrooms = (res) => {
 };
 
 const onCreateroom = (res) => {
-  roomid = res.roomid;
+  myRoomId = res.roomid;
   document.getElementById('btnCreateToken').disabled = false;
-  console.log('onCreateroom::roomid: ', roomid);
+  console.log('onCreateroom::roomid: ', myRoomId);
 };
 
 const onCreatetoken = (res) => {
-  token = res.token;
-  console.log('onCreatetoken::token: ', token);
+  myToken = res.token;
+  console.log('onCreatetoken::token: ', myToken);
+  document.getElementById('btnStartChat').disabled = false;
 };
 
 const onGetroomusers = (res) => {
