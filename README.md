@@ -41,3 +41,7 @@
   - `server/scripts`中编写[app.js](./server/scripts/app.js)
   - `server/pages`中编写[client.html](./server/pages/client.html)
 - 开启服务：在命令行打开[app.js](./server/scripts/app.js)`node ./app.js`
+
+### licode demo
+
+- 在浏览器打开[客戶端代码](./client/licode.html)
