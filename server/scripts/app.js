@@ -2,6 +2,7 @@
 const webSocketServer = require('ws').Server;
 const http = require('http');
 const fs = require('fs');
+const url = require('url');
 
 // 2. Create a WebSocket instance, and register the port 9060
 const ws = new webSocketServer({ port: 9060 });
@@ -28,6 +29,9 @@ ws.on('connection', function(socket, req) {
 
 //4. Create a web server to read HTML file, and respond to client's request
 var server = http.createServer(function(req, resp) {
+  const pathname = url.parse(req.url).pathname;
+  console.log('Received ', pathname, ' request');
+  
   fs.readFile('../pages/client.html', function(error, pgResp) {
     if(error) {
       resp.writeHead(404);
@@ -37,6 +41,20 @@ var server = http.createServer(function(req, resp) {
       resp.end(pgResp);
     }
   });
+});
+
+server.on('upgrade', function(req, socket, header) {
+  const pathname = url.parse(req.url).pathname;
+
+  if(pathname == '/foo') {
+    ws.handleUpgrade(req, socket, header, function(socket1) {
+      console.log('Received foo request');
+      ws.emit('connection', socket1, req);
+    })
+  } else {
+    console.log('Received ', pathname, ' request');
+    socket.destroy();
+  }
 });
 
 //5. start service, listening on the port 5050
